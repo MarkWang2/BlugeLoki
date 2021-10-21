@@ -5,9 +5,9 @@ package queryrange
 
 import (
 	fmt "fmt"
-	github_com_grafana_loki_pkg_logproto "github.com/MarkWang2/loki/pkg/logproto"
-	logproto "github.com/MarkWang2/loki/pkg/logproto"
-	stats "github.com/MarkWang2/loki/pkg/logql/stats"
+	github_com_grafana_loki_pkg_logproto "github.com/MarkWang2/BlugeLoki/pkg/logproto"
+	logproto "github.com/MarkWang2/BlugeLoki/pkg/logproto"
+	stats "github.com/MarkWang2/BlugeLoki/pkg/logql/stats"
 	queryrange "github.com/cortexproject/cortex/pkg/querier/queryrange"
 	_ "github.com/gogo/protobuf/gogoproto"
 	proto "github.com/gogo/protobuf/proto"
@@ -476,7 +476,7 @@ func (m *LokiLabelNamesResponse) GetVersion() uint32 {
 
 type LokiData struct {
 	ResultType string                                        `protobuf:"bytes,1,opt,name=ResultType,json=resultType,proto3" json:"resultType"`
-	Result     []github_com_grafana_loki_pkg_logproto.Stream `protobuf:"bytes,2,rep,name=Result,json=result,proto3,customtype=github.com/MarkWang2/loki/pkg/logproto.Stream" json:"result"`
+	Result     []github_com_grafana_loki_pkg_logproto.Stream `protobuf:"bytes,2,rep,name=Result,json=result,proto3,customtype=github.com/MarkWang2/BlugeLoki/pkg/logproto.Stream" json:"result"`
 }
 
 func (m *LokiData) Reset()      { *m = LokiData{} }

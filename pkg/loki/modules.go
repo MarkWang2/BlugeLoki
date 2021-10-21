@@ -9,8 +9,8 @@ import (
 	"os"
 	"time"
 
-	"github.com/MarkWang2/loki/pkg/ruler/manager"
-	"github.com/MarkWang2/loki/pkg/storage/stores/shipper/compactor"
+	"github.com/MarkWang2/BlugeLoki/pkg/ruler/manager"
+	"github.com/MarkWang2/BlugeLoki/pkg/storage/stores/shipper/compactor"
 
 	"github.com/cortexproject/cortex/pkg/chunk"
 	"github.com/cortexproject/cortex/pkg/chunk/cache"
@@ -34,17 +34,17 @@ import (
 	"github.com/weaveworks/common/server"
 	"google.golang.org/grpc/health/grpc_health_v1"
 
-	"github.com/MarkWang2/loki/pkg/distributor"
-	"github.com/MarkWang2/loki/pkg/ingester"
-	"github.com/MarkWang2/loki/pkg/logproto"
-	"github.com/MarkWang2/loki/pkg/logql"
-	"github.com/MarkWang2/loki/pkg/querier"
-	"github.com/MarkWang2/loki/pkg/querier/queryrange"
-	"github.com/MarkWang2/loki/pkg/ruler"
-	loki_storage "github.com/MarkWang2/loki/pkg/storage"
-	"github.com/MarkWang2/loki/pkg/storage/stores/shipper"
-	serverutil "github.com/MarkWang2/loki/pkg/util/server"
-	"github.com/MarkWang2/loki/pkg/util/validation"
+	"github.com/MarkWang2/BlugeLoki/pkg/distributor"
+	"github.com/MarkWang2/BlugeLoki/pkg/ingester"
+	"github.com/MarkWang2/BlugeLoki/pkg/logproto"
+	"github.com/MarkWang2/BlugeLoki/pkg/logql"
+	"github.com/MarkWang2/BlugeLoki/pkg/querier"
+	"github.com/MarkWang2/BlugeLoki/pkg/querier/queryrange"
+	"github.com/MarkWang2/BlugeLoki/pkg/ruler"
+	loki_storage "github.com/MarkWang2/BlugeLoki/pkg/storage"
+	"github.com/MarkWang2/BlugeLoki/pkg/storage/stores/shipper"
+	serverutil "github.com/MarkWang2/BlugeLoki/pkg/util/server"
+	"github.com/MarkWang2/BlugeLoki/pkg/util/validation"
 )
 
 const maxChunkAgeForTableManager = 12 * time.Hour

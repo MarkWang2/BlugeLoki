@@ -10,7 +10,7 @@ import (
 	"github.com/cortexproject/cortex/pkg/chunk/local"
 	"github.com/stretchr/testify/require"
 
-	"github.com/MarkWang2/loki/storage/stores/shipper/testutil"
+	"github.com/MarkWang2/BlugeLoki/storage/stores/shipper/testutil"
 )
 
 func Test_GetFileFromStorage(t *testing.T) {

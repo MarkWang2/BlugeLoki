@@ -12,8 +12,8 @@ import (
 	"github.com/prometheus/prometheus/pkg/labels"
 	"github.com/prometheus/prometheus/promql"
 
-	"github.com/MarkWang2/loki/pkg/iter"
-	"github.com/MarkWang2/loki/pkg/logproto"
+	"github.com/MarkWang2/BlugeLoki/pkg/iter"
+	"github.com/MarkWang2/BlugeLoki/pkg/logproto"
 )
 
 type QueryRangeType string

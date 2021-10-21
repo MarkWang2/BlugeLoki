@@ -10,9 +10,9 @@ import (
 	"github.com/fatih/color"
 	"github.com/gorilla/websocket"
 
-	"github.com/MarkWang2/loki/pkg/logcli/client"
-	"github.com/MarkWang2/loki/pkg/logcli/output"
-	"github.com/MarkWang2/loki/pkg/loghttp"
+	"github.com/MarkWang2/BlugeLoki/pkg/logcli/client"
+	"github.com/MarkWang2/BlugeLoki/pkg/logcli/output"
+	"github.com/MarkWang2/BlugeLoki/pkg/loghttp"
 )
 
 // TailQuery connects to the Loki websocket endpoint and tails logs

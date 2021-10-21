@@ -8,7 +8,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/MarkWang2/loki/pkg/storage"
+	"github.com/MarkWang2/BlugeLoki/pkg/storage"
 
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
@@ -22,16 +22,16 @@ import (
 	"github.com/cortexproject/cortex/pkg/util"
 	"github.com/cortexproject/cortex/pkg/util/services"
 
-	"github.com/MarkWang2/loki/pkg/chunkenc"
-	"github.com/MarkWang2/loki/pkg/helpers"
-	"github.com/MarkWang2/loki/pkg/ingester/client"
-	"github.com/MarkWang2/loki/pkg/iter"
-	"github.com/MarkWang2/loki/pkg/logproto"
-	"github.com/MarkWang2/loki/pkg/logql"
-	"github.com/MarkWang2/loki/pkg/logql/stats"
-	"github.com/MarkWang2/loki/pkg/storage/stores/shipper"
-	listutil "github.com/MarkWang2/loki/pkg/util"
-	"github.com/MarkWang2/loki/pkg/util/validation"
+	"github.com/MarkWang2/BlugeLoki/pkg/chunkenc"
+	"github.com/MarkWang2/BlugeLoki/pkg/helpers"
+	"github.com/MarkWang2/BlugeLoki/pkg/ingester/client"
+	"github.com/MarkWang2/BlugeLoki/pkg/iter"
+	"github.com/MarkWang2/BlugeLoki/pkg/logproto"
+	"github.com/MarkWang2/BlugeLoki/pkg/logql"
+	"github.com/MarkWang2/BlugeLoki/pkg/logql/stats"
+	"github.com/MarkWang2/BlugeLoki/pkg/storage/stores/shipper"
+	listutil "github.com/MarkWang2/BlugeLoki/pkg/util"
+	"github.com/MarkWang2/BlugeLoki/pkg/util/validation"
 )
 
 // ErrReadOnly is returned when the ingester is shutting down and a push was

@@ -16,7 +16,7 @@ import (
 	"github.com/prometheus/common/model"
 	"github.com/weaveworks/common/logging"
 
-	"github.com/MarkWang2/loki/pkg/promtail/client"
+	"github.com/MarkWang2/BlugeLoki/pkg/promtail/client"
 )
 
 var (

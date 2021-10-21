@@ -19,17 +19,17 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/weaveworks/common/user"
 
-	"github.com/MarkWang2/loki/pkg/cfg"
-	"github.com/MarkWang2/loki/pkg/logcli/client"
-	"github.com/MarkWang2/loki/pkg/logcli/output"
-	"github.com/MarkWang2/loki/pkg/loghttp"
-	"github.com/MarkWang2/loki/pkg/logproto"
-	"github.com/MarkWang2/loki/pkg/logql"
-	"github.com/MarkWang2/loki/pkg/logql/marshal"
-	"github.com/MarkWang2/loki/pkg/logql/stats"
-	"github.com/MarkWang2/loki/pkg/loki"
-	"github.com/MarkWang2/loki/pkg/storage"
-	"github.com/MarkWang2/loki/pkg/util/validation"
+	"github.com/MarkWang2/BlugeLoki/pkg/cfg"
+	"github.com/MarkWang2/BlugeLoki/pkg/logcli/client"
+	"github.com/MarkWang2/BlugeLoki/pkg/logcli/output"
+	"github.com/MarkWang2/BlugeLoki/pkg/loghttp"
+	"github.com/MarkWang2/BlugeLoki/pkg/logproto"
+	"github.com/MarkWang2/BlugeLoki/pkg/logql"
+	"github.com/MarkWang2/BlugeLoki/pkg/logql/marshal"
+	"github.com/MarkWang2/BlugeLoki/pkg/logql/stats"
+	"github.com/MarkWang2/BlugeLoki/pkg/loki"
+	"github.com/MarkWang2/BlugeLoki/pkg/storage"
+	"github.com/MarkWang2/BlugeLoki/pkg/util/validation"
 )
 
 type streamEntryPair struct {

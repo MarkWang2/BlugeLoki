@@ -20,10 +20,10 @@ import (
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 
-	"github.com/MarkWang2/loki/pkg/chunkenc"
-	"github.com/MarkWang2/loki/pkg/ingester/client"
-	"github.com/MarkWang2/loki/pkg/logproto"
-	"github.com/MarkWang2/loki/pkg/logql"
+	"github.com/MarkWang2/BlugeLoki/pkg/chunkenc"
+	"github.com/MarkWang2/BlugeLoki/pkg/ingester/client"
+	"github.com/MarkWang2/BlugeLoki/pkg/logproto"
+	"github.com/MarkWang2/BlugeLoki/pkg/logql"
 )
 
 func TestTransferOut(t *testing.T) {

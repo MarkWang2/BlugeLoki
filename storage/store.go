@@ -16,12 +16,12 @@ import (
 	"github.com/prometheus/prometheus/pkg/labels"
 	"github.com/weaveworks/common/user"
 
-	"github.com/MarkWang2/loki/pkg/iter"
-	"github.com/MarkWang2/loki/pkg/logproto"
-	"github.com/MarkWang2/loki/pkg/logql"
-	"github.com/MarkWang2/loki/pkg/logql/stats"
-	"github.com/MarkWang2/loki/pkg/util"
-	"github.com/MarkWang2/loki/storage/stores/shipper"
+	"github.com/MarkWang2/BlugeLoki/pkg/iter"
+	"github.com/MarkWang2/BlugeLoki/pkg/logproto"
+	"github.com/MarkWang2/BlugeLoki/pkg/logql"
+	"github.com/MarkWang2/BlugeLoki/pkg/logql/stats"
+	"github.com/MarkWang2/BlugeLoki/pkg/util"
+	"github.com/MarkWang2/BlugeLoki/storage/stores/shipper"
 )
 
 var (

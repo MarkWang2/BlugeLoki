@@ -6,7 +6,7 @@ Gem::Specification.new do |s|
 
   s.summary       = 'Output plugin to ship logs to a Grafana Loki server'
   s.description   = 'Output plugin to ship logs to a Grafana Loki server'
-  s.homepage      = 'https://github.com/MarkWang2/loki/'
+  s.homepage      = 'https://github.com/MarkWang2/BlugeLoki/'
   s.license       = 'Apache-2.0'
   s.require_paths = ["lib"]
 

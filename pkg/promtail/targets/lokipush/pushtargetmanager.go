@@ -9,10 +9,10 @@ import (
 	"github.com/go-kit/kit/log/level"
 	"github.com/prometheus/client_golang/prometheus"
 
-	"github.com/MarkWang2/loki/pkg/logentry/stages"
-	"github.com/MarkWang2/loki/pkg/promtail/api"
-	"github.com/MarkWang2/loki/pkg/promtail/scrapeconfig"
-	"github.com/MarkWang2/loki/pkg/promtail/targets/target"
+	"github.com/MarkWang2/BlugeLoki/pkg/logentry/stages"
+	"github.com/MarkWang2/BlugeLoki/pkg/promtail/api"
+	"github.com/MarkWang2/BlugeLoki/pkg/promtail/scrapeconfig"
+	"github.com/MarkWang2/BlugeLoki/pkg/promtail/targets/target"
 )
 
 // SyslogTargetManager manages a series of PushTargets.

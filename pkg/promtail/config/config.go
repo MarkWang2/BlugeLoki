@@ -3,11 +3,11 @@ package config
 import (
 	"flag"
 
-	"github.com/MarkWang2/loki/pkg/promtail/client"
-	"github.com/MarkWang2/loki/pkg/promtail/positions"
-	"github.com/MarkWang2/loki/pkg/promtail/scrapeconfig"
-	"github.com/MarkWang2/loki/pkg/promtail/server"
-	"github.com/MarkWang2/loki/pkg/promtail/targets/file"
+	"github.com/MarkWang2/BlugeLoki/pkg/promtail/client"
+	"github.com/MarkWang2/BlugeLoki/pkg/promtail/positions"
+	"github.com/MarkWang2/BlugeLoki/pkg/promtail/scrapeconfig"
+	"github.com/MarkWang2/BlugeLoki/pkg/promtail/server"
+	"github.com/MarkWang2/BlugeLoki/pkg/promtail/targets/file"
 )
 
 // Config for promtail, describing what files to watch.

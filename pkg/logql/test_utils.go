@@ -11,8 +11,8 @@ import (
 	"github.com/prometheus/prometheus/pkg/labels"
 	"github.com/prometheus/prometheus/promql/parser"
 
-	"github.com/MarkWang2/loki/pkg/iter"
-	"github.com/MarkWang2/loki/pkg/logproto"
+	"github.com/MarkWang2/BlugeLoki/pkg/iter"
+	"github.com/MarkWang2/BlugeLoki/pkg/logproto"
 )
 
 func NewMockQuerier(shards int, streams []logproto.Stream) MockQuerier {

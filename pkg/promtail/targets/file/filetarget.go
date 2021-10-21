@@ -15,11 +15,11 @@ import (
 	"github.com/prometheus/common/model"
 	fsnotify "gopkg.in/fsnotify.v1"
 
-	"github.com/MarkWang2/loki/pkg/helpers"
-	"github.com/MarkWang2/loki/pkg/promtail/api"
-	"github.com/MarkWang2/loki/pkg/promtail/client"
-	"github.com/MarkWang2/loki/pkg/promtail/positions"
-	"github.com/MarkWang2/loki/pkg/promtail/targets/target"
+	"github.com/MarkWang2/BlugeLoki/pkg/helpers"
+	"github.com/MarkWang2/BlugeLoki/pkg/promtail/api"
+	"github.com/MarkWang2/BlugeLoki/pkg/promtail/client"
+	"github.com/MarkWang2/BlugeLoki/pkg/promtail/positions"
+	"github.com/MarkWang2/BlugeLoki/pkg/promtail/targets/target"
 )
 
 var (

@@ -5,7 +5,7 @@ import (
 	"bytes"
 	"context"
 	"fmt"
-	"github.com/MarkWang2/loki/storage/stores/shipper/bluge_db"
+	"github.com/MarkWang2/BlugeLoki/storage/stores/shipper/bluge_db"
 	segment "github.com/blugelabs/bluge_segment_api"
 	"io"
 	"io/ioutil"

@@ -18,7 +18,7 @@ import (
 	"github.com/golang/snappy"
 	"github.com/prometheus/common/model"
 
-	"github.com/MarkWang2/loki/pkg/logproto"
+	"github.com/MarkWang2/BlugeLoki/pkg/logproto"
 )
 
 const (

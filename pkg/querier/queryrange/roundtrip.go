@@ -18,8 +18,8 @@ import (
 	"github.com/weaveworks/common/httpgrpc"
 	"github.com/weaveworks/common/user"
 
-	"github.com/MarkWang2/loki/pkg/loghttp"
-	"github.com/MarkWang2/loki/pkg/logql"
+	"github.com/MarkWang2/BlugeLoki/pkg/loghttp"
+	"github.com/MarkWang2/BlugeLoki/pkg/logql"
 )
 
 // Config is the configuration for the queryrange tripperware

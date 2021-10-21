@@ -14,8 +14,8 @@ import (
 	"github.com/go-kit/kit/log/level"
 	"github.com/weaveworks/common/middleware"
 
-	"github.com/MarkWang2/loki/pkg/logql"
-	"github.com/MarkWang2/loki/pkg/logql/stats"
+	"github.com/MarkWang2/BlugeLoki/pkg/logql"
+	"github.com/MarkWang2/BlugeLoki/pkg/logql/stats"
 )
 
 type ctxKeyType string

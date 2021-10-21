@@ -17,15 +17,15 @@ import (
 	"github.com/cortexproject/cortex/pkg/ingester/index"
 	cutil "github.com/cortexproject/cortex/pkg/util"
 
-	"github.com/MarkWang2/loki/pkg/chunkenc"
-	"github.com/MarkWang2/loki/pkg/helpers"
-	"github.com/MarkWang2/loki/pkg/iter"
-	"github.com/MarkWang2/loki/pkg/loghttp"
-	"github.com/MarkWang2/loki/pkg/logproto"
-	"github.com/MarkWang2/loki/pkg/logql"
-	"github.com/MarkWang2/loki/pkg/logql/stats"
-	"github.com/MarkWang2/loki/pkg/util"
-	"github.com/MarkWang2/loki/pkg/util/validation"
+	"github.com/MarkWang2/BlugeLoki/pkg/chunkenc"
+	"github.com/MarkWang2/BlugeLoki/pkg/helpers"
+	"github.com/MarkWang2/BlugeLoki/pkg/iter"
+	"github.com/MarkWang2/BlugeLoki/pkg/loghttp"
+	"github.com/MarkWang2/BlugeLoki/pkg/logproto"
+	"github.com/MarkWang2/BlugeLoki/pkg/logql"
+	"github.com/MarkWang2/BlugeLoki/pkg/logql/stats"
+	"github.com/MarkWang2/BlugeLoki/pkg/util"
+	"github.com/MarkWang2/BlugeLoki/pkg/util/validation"
 )
 
 const (

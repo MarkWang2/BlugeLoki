@@ -12,10 +12,10 @@ import (
 	"github.com/prometheus/prometheus/promql/parser"
 	"github.com/stretchr/testify/require"
 
-	"github.com/MarkWang2/loki/pkg/loghttp"
-	legacy "github.com/MarkWang2/loki/pkg/loghttp/legacy"
-	"github.com/MarkWang2/loki/pkg/logproto"
-	"github.com/MarkWang2/loki/pkg/logql"
+	"github.com/MarkWang2/BlugeLoki/pkg/loghttp"
+	legacy "github.com/MarkWang2/BlugeLoki/pkg/loghttp/legacy"
+	"github.com/MarkWang2/BlugeLoki/pkg/logproto"
+	"github.com/MarkWang2/BlugeLoki/pkg/logql"
 )
 
 // covers responses from /loki/api/v1/query_range and /loki/api/v1/query

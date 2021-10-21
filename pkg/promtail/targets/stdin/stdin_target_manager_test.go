@@ -13,8 +13,8 @@ import (
 	"github.com/stretchr/testify/require"
 	"gopkg.in/yaml.v2"
 
-	"github.com/MarkWang2/loki/pkg/logentry/stages"
-	"github.com/MarkWang2/loki/pkg/promtail/scrapeconfig"
+	"github.com/MarkWang2/BlugeLoki/pkg/logentry/stages"
+	"github.com/MarkWang2/BlugeLoki/pkg/promtail/scrapeconfig"
 )
 
 type line struct {

@@ -14,7 +14,7 @@ import (
 	"github.com/prometheus/common/model"
 	"github.com/stretchr/testify/assert"
 
-	"github.com/MarkWang2/loki/pkg/logentry/metric"
+	"github.com/MarkWang2/BlugeLoki/pkg/logentry/metric"
 )
 
 var testMetricYaml = `

@@ -4,7 +4,7 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"github.com/MarkWang2/loki/pkg/storage/stores/shipper/bluge_db"
+	"github.com/MarkWang2/BlugeLoki/pkg/storage/stores/shipper/bluge_db"
 	segment "github.com/blugelabs/bluge_segment_api"
 	"io/ioutil"
 	"os"
@@ -22,9 +22,9 @@ import (
 	"github.com/weaveworks/common/instrument"
 	"go.etcd.io/bbolt"
 
-	"github.com/MarkWang2/loki/pkg/storage/stores/shipper/downloads"
-	"github.com/MarkWang2/loki/pkg/storage/stores/shipper/uploads"
-	"github.com/MarkWang2/loki/pkg/storage/stores/util"
+	"github.com/MarkWang2/BlugeLoki/pkg/storage/stores/shipper/downloads"
+	"github.com/MarkWang2/BlugeLoki/pkg/storage/stores/shipper/uploads"
+	"github.com/MarkWang2/BlugeLoki/pkg/storage/stores/util"
 )
 
 const (

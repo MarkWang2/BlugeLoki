@@ -12,8 +12,8 @@ import (
 	"github.com/stretchr/testify/require"
 	"github.com/weaveworks/common/user"
 
-	"github.com/MarkWang2/loki/pkg/loghttp"
-	"github.com/MarkWang2/loki/pkg/logproto"
+	"github.com/MarkWang2/BlugeLoki/pkg/loghttp"
+	"github.com/MarkWang2/BlugeLoki/pkg/logproto"
 )
 
 var nilMetrics = NewSplitByMetrics(nil)

@@ -8,9 +8,9 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/MarkWang2/loki/pkg/iter"
-	loghttp "github.com/MarkWang2/loki/pkg/loghttp/legacy"
-	"github.com/MarkWang2/loki/pkg/logproto"
+	"github.com/MarkWang2/BlugeLoki/pkg/iter"
+	loghttp "github.com/MarkWang2/BlugeLoki/pkg/loghttp/legacy"
+	"github.com/MarkWang2/BlugeLoki/pkg/logproto"
 )
 
 const (

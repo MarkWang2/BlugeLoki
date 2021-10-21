@@ -15,12 +15,12 @@ import (
 	"github.com/prometheus/common/version"
 	"github.com/weaveworks/common/logging"
 
-	_ "github.com/MarkWang2/loki/pkg/build"
-	"github.com/MarkWang2/loki/pkg/cfg"
-	"github.com/MarkWang2/loki/pkg/logentry/stages"
-	"github.com/MarkWang2/loki/pkg/promtail"
-	"github.com/MarkWang2/loki/pkg/promtail/config"
-	logutil "github.com/MarkWang2/loki/pkg/util"
+	_ "github.com/MarkWang2/BlugeLoki/pkg/build"
+	"github.com/MarkWang2/BlugeLoki/pkg/cfg"
+	"github.com/MarkWang2/BlugeLoki/pkg/logentry/stages"
+	"github.com/MarkWang2/BlugeLoki/pkg/promtail"
+	"github.com/MarkWang2/BlugeLoki/pkg/promtail/config"
+	logutil "github.com/MarkWang2/BlugeLoki/pkg/util"
 )
 
 func init() {

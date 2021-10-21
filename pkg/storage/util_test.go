@@ -17,10 +17,10 @@ import (
 	"github.com/prometheus/prometheus/pkg/labels"
 	"github.com/stretchr/testify/assert"
 
-	"github.com/MarkWang2/loki/pkg/chunkenc"
-	"github.com/MarkWang2/loki/pkg/logproto"
-	"github.com/MarkWang2/loki/pkg/logql"
-	"github.com/MarkWang2/loki/pkg/util"
+	"github.com/MarkWang2/BlugeLoki/pkg/chunkenc"
+	"github.com/MarkWang2/BlugeLoki/pkg/logproto"
+	"github.com/MarkWang2/BlugeLoki/pkg/logql"
+	"github.com/MarkWang2/BlugeLoki/pkg/util"
 )
 
 var fooLabelsWithName = "{foo=\"bar\", __name__=\"logs\"}"

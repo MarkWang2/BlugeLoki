@@ -18,8 +18,8 @@ import (
 	"github.com/cortexproject/cortex/pkg/chunk"
 	"github.com/cortexproject/cortex/pkg/util"
 
-	"github.com/MarkWang2/loki/pkg/chunkenc"
-	loki_util "github.com/MarkWang2/loki/pkg/util"
+	"github.com/MarkWang2/BlugeLoki/pkg/chunkenc"
+	loki_util "github.com/MarkWang2/BlugeLoki/pkg/util"
 )
 
 var (

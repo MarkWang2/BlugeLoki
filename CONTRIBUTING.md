@@ -7,17 +7,17 @@ Loki uses GitHub to manage reviews of pull requests:
 
 ## Steps to contribute
 
-For now, you need to add your fork as a remote on the original **\$GOPATH**/src/github.com/MarkWang2/loki clone, so:
+For now, you need to add your fork as a remote on the original **\$GOPATH**/src/github.com/MarkWang2/BlugeLoki clone, so:
 
 ```bash
 
-$ go get github.com/MarkWang2/loki
-$ cd $GOPATH/src/github.com/MarkWang2/loki # GOPATH is $HOME/go by default.
+$ go get github.com/MarkWang2/BlugeLoki
+$ cd $GOPATH/src/github.com/MarkWang2/BlugeLoki # GOPATH is $HOME/go by default.
 
 $ git remote add <FORK_NAME> <FORK_URL>
 ```
 
-Notice: `go get` return `package github.com/MarkWang2/loki: no Go files in /go/src/github.com/MarkWang2/loki` is normal.
+Notice: `go get` return `package github.com/MarkWang2/BlugeLoki: no Go files in /go/src/github.com/MarkWang2/BlugeLoki` is normal.
 
 ## Contribute to helm
 
@@ -63,7 +63,7 @@ import (
 	"github.com/prometheus/common/model"
 	"github.com/prometheus/prometheus/pkg/labels"
 
-	"github.com/MarkWang2/loki/pkg/logproto"
-	"github.com/MarkWang2/loki/pkg/logql"
+	"github.com/MarkWang2/BlugeLoki/pkg/logproto"
+	"github.com/MarkWang2/BlugeLoki/pkg/logql"
 )
 ```

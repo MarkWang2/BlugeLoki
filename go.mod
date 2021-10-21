@@ -1,4 +1,4 @@
-module github.com/MarkWang2/loki
+module github.com/MarkWang2/BlugeLoki
 
 go 1.14
 

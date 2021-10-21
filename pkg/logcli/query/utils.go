@@ -1,7 +1,7 @@
 package query
 
 import (
-	"github.com/MarkWang2/loki/pkg/loghttp"
+	"github.com/MarkWang2/BlugeLoki/pkg/loghttp"
 )
 
 // return commonLabels labels between given labels set

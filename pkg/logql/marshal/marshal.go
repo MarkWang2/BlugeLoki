@@ -5,14 +5,14 @@ package marshal
 import (
 	"io"
 
-	"github.com/MarkWang2/loki/pkg/logql"
+	"github.com/MarkWang2/BlugeLoki/pkg/logql"
 
 	"github.com/gorilla/websocket"
 	json "github.com/json-iterator/go"
 
-	"github.com/MarkWang2/loki/pkg/loghttp"
-	legacy "github.com/MarkWang2/loki/pkg/loghttp/legacy"
-	"github.com/MarkWang2/loki/pkg/logproto"
+	"github.com/MarkWang2/BlugeLoki/pkg/loghttp"
+	legacy "github.com/MarkWang2/BlugeLoki/pkg/loghttp/legacy"
+	"github.com/MarkWang2/BlugeLoki/pkg/logproto"
 )
 
 // WriteQueryResponseJSON marshals the promql.Value to v1 loghttp JSON and then

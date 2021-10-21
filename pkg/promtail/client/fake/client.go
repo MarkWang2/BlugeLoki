@@ -5,7 +5,7 @@ import (
 
 	"github.com/prometheus/common/model"
 
-	"github.com/MarkWang2/loki/pkg/promtail/api"
+	"github.com/MarkWang2/BlugeLoki/pkg/promtail/api"
 )
 
 // Client is a fake client used for testing.

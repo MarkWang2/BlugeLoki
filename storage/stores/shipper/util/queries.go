@@ -2,7 +2,7 @@ package util
 
 import (
 	"context"
-	"github.com/MarkWang2/loki/storage/stores/shipper/bluge_db"
+	"github.com/MarkWang2/BlugeLoki/storage/stores/shipper/bluge_db"
 	segment "github.com/blugelabs/bluge_segment_api"
 
 	"github.com/cortexproject/cortex/pkg/util"

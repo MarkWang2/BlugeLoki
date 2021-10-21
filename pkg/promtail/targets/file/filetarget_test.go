@@ -12,8 +12,8 @@ import (
 	"github.com/go-kit/kit/log"
 	"gopkg.in/yaml.v2"
 
-	"github.com/MarkWang2/loki/pkg/promtail/positions"
-	"github.com/MarkWang2/loki/pkg/promtail/targets/testutils"
+	"github.com/MarkWang2/BlugeLoki/pkg/promtail/positions"
+	"github.com/MarkWang2/BlugeLoki/pkg/promtail/targets/testutils"
 )
 
 func TestLongPositionsSyncDelayStillSavesCorrectPosition(t *testing.T) {

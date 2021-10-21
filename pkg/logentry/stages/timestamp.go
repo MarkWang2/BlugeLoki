@@ -12,7 +12,7 @@ import (
 	"github.com/mitchellh/mapstructure"
 	"github.com/prometheus/common/model"
 
-	"github.com/MarkWang2/loki/pkg/util"
+	"github.com/MarkWang2/BlugeLoki/pkg/util"
 )
 
 const (

@@ -1,8 +1,8 @@
 package storage
 
 import (
-	"github.com/MarkWang2/loki/pkg/iter"
-	"github.com/MarkWang2/loki/pkg/logproto"
+	"github.com/MarkWang2/BlugeLoki/pkg/iter"
+	"github.com/MarkWang2/BlugeLoki/pkg/logproto"
 )
 
 // cachedIterator is an iterator that caches iteration to be replayed later on.

@@ -10,7 +10,7 @@ import (
 	"github.com/prometheus/common/model"
 	"github.com/stretchr/testify/require"
 
-	"github.com/MarkWang2/loki/pkg/util/flagext"
+	"github.com/MarkWang2/BlugeLoki/pkg/util/flagext"
 )
 
 func TestNewLogger(t *testing.T) {

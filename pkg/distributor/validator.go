@@ -9,9 +9,9 @@ import (
 	cortex_client "github.com/cortexproject/cortex/pkg/ingester/client"
 	"github.com/weaveworks/common/httpgrpc"
 
-	"github.com/MarkWang2/loki/pkg/logproto"
-	"github.com/MarkWang2/loki/pkg/util"
-	"github.com/MarkWang2/loki/pkg/util/validation"
+	"github.com/MarkWang2/BlugeLoki/pkg/logproto"
+	"github.com/MarkWang2/BlugeLoki/pkg/util"
+	"github.com/MarkWang2/BlugeLoki/pkg/util/validation"
 )
 
 type Validator struct {

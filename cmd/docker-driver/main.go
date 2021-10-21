@@ -11,7 +11,7 @@ import (
 	"github.com/prometheus/common/version"
 	"github.com/weaveworks/common/logging"
 
-	_ "github.com/MarkWang2/loki/pkg/build"
+	_ "github.com/MarkWang2/BlugeLoki/pkg/build"
 )
 
 const socketAddress = "/run/docker/plugins/loki.sock"

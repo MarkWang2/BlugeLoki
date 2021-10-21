@@ -13,16 +13,16 @@ In order to build Loki manually, you need to clone the GitHub repo and then `mak
 
 ## Build manually on your local system
 
-Clone Loki to `$GOPATH/src/github.com/MarkWang2/loki`:
+Clone Loki to `$GOPATH/src/github.com/MarkWang2/BlugeLoki`:
 
 ```bash
-git clone https://github.com/MarkWang2/loki $GOPATH/src/github.com/MarkWang2/loki
+git clone https://github.com/MarkWang2/BlugeLoki $GOPATH/src/github.com/MarkWang2/BlugeLoki
 ```
 
 Then change into that directory and run `make loki`:
 
 ```bash
-cd $GOPATH/src/github.com/MarkWang2/loki
+cd $GOPATH/src/github.com/MarkWang2/BlugeLoki
 make loki
 ```
 

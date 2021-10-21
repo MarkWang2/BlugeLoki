@@ -3,7 +3,7 @@ package distributor
 import (
 	"github.com/cortexproject/cortex/pkg/util/limiter"
 
-	"github.com/MarkWang2/loki/pkg/util/validation"
+	"github.com/MarkWang2/BlugeLoki/pkg/util/validation"
 )
 
 // ReadLifecycler represents the read interface to the lifecycler.

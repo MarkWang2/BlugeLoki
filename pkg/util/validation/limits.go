@@ -4,7 +4,7 @@ import (
 	"flag"
 	"time"
 
-	"github.com/MarkWang2/loki/pkg/util/flagext"
+	"github.com/MarkWang2/BlugeLoki/pkg/util/flagext"
 )
 
 const (
