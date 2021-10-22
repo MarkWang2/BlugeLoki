@@ -5,12 +5,11 @@ import (
 	"compress/gzip"
 	"context"
 	"fmt"
+	"github.com/grafana/loki/pkg/chunkenc"
 	"io"
 	"os"
 	"path/filepath"
 	"strings"
-
-	"github.com/MarkWang2/BlugeLoki/pkg/chunkenc"
 
 	"github.com/cortexproject/cortex/pkg/util"
 	"github.com/go-kit/kit/log/level"
