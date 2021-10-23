@@ -3,15 +3,19 @@ module github.com/MarkWang2/BlugeLoki
 go 1.14
 
 require (
+	github.com/blang/semver v3.5.1+incompatible // indirect
 	github.com/blugelabs/bluge v0.1.7
 	github.com/blugelabs/bluge_segment_api v0.2.0
 	github.com/cortexproject/cortex v1.4.1-0.20201012150016-9e8beee8cacb
+	github.com/frankban/quicktest v1.7.2 // indirect
 	github.com/go-kit/kit v0.10.0
-	github.com/grafana/loki v1.6.1
+	github.com/golang/snappy v0.0.1
 	github.com/klauspost/compress v1.9.5
 	github.com/kr/text v0.2.0 // indirect
+	github.com/pierrec/lz4 v2.5.3-0.20200429092203-e876bbd321b3+incompatible
 	github.com/prometheus/client_golang v1.7.1
 	github.com/prometheus/common v0.14.0
+	github.com/prometheus/prometheus v1.8.2-0.20200923143134-7e2db3d092f3
 	github.com/stretchr/testify v1.6.1
 	github.com/weaveworks/common v0.0.0-20200914083218-61ffdd448099
 	go.etcd.io/bbolt v1.3.5-0.20200615073812-232d8fc87f50

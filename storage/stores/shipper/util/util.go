@@ -5,7 +5,6 @@ import (
 	"compress/gzip"
 	"context"
 	"fmt"
-	"github.com/grafana/loki/pkg/chunkenc"
 	"io"
 	"os"
 	"path/filepath"
@@ -86,8 +85,8 @@ func CompressFile(src, dest string) error {
 		}
 	}()
 
-	compressedWriter := chunkenc.Gzip.GetWriter(compressedFile)
-	defer chunkenc.Gzip.PutWriter(compressedWriter)
+	compressedWriter := Gzip.GetWriter(compressedFile)
+	defer Gzip.PutWriter(compressedWriter)
 
 	_, err = io.Copy(compressedWriter, uncompressedFile)
 	if err != nil {
