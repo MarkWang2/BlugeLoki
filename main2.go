@@ -1,237 +1,267 @@
 package main
 
 //
-//
 //import (
-//	"archive/tar"
-//	"bytes"
-//	"compress/gzip"
-//	"context"
+//	"flag"
 //	"fmt"
-//	"github.com/cortexproject/cortex/pkg/chunk/local"
-//	shipper_util "github.com/MarkWang2/BlugeLoki/pkg/storage/stores/shipper/util"
-//	"io"
-//	"io/ioutil"
-//	"log"
+//	"net/http"
+//	"net/url"
 //	"os"
-//	"path/filepath"
+//	"os/signal"
+//	"path"
+//	"sort"
 //	"strings"
+//	"syscall"
+//	"text/template"
+//
+//	"github.com/go-kit/kit/log"
+//	"github.com/go-kit/kit/log/level"
+//	"github.com/pkg/errors"
+//	"github.com/prometheus/common/version"
+//	serverww "github.com/weaveworks/common/server"
+//
+//	"github.com/grafana/loki/pkg/promtail/server/ui"
+//	"github.com/grafana/loki/pkg/promtail/targets"
+//	"github.com/grafana/loki/pkg/promtail/targets/target"
 //)
-//import "github.com/blugelabs/bluge"
 //
-//func main() {
-//	config := bluge.DefaultConfig("./snpseg")
-//	writer, err := bluge.OpenWriter(config)
-//	if err != nil {
-//		log.Fatalf("error opening writer: %v", err)
-//	}
-//	defer writer.Close()
+//var (
+//	readinessProbeFailure = "Not : Unable to find any logs to tail. Please verify permissions, volumes, scrape_config, etc."
+//	readinessProbeSuccess = []byte("")
+//)
 //
-//	doc := bluge.NewDocument("example").
-//		AddField(bluge.NewTextField("name", "bluge"))
-//
-//	err = writer.Update(doc.ID(), doc)
-//	if err != nil {
-//		log.Fatalf("error updating document: %v", err)
-//	}
-//
-//	reader, err := writer.Reader()
-//	if err != nil {
-//		log.Fatalf("error getting index reader: %v", err)
-//	}
-//	defer reader.Close()
-//
-//	query := bluge.NewMatchQuery("bluge").SetField("name")
-//	request := bluge.NewTopNSearch(10, query).
-//		WithStandardAggregations()
-//	documentMatchIterator, err := reader.Search(context.Background(), request)
-//	if err != nil {
-//		log.Fatalf("error executing search: %v", err)
-//	}
-//	match, err := documentMatchIterator.Next()
-//	for err == nil && match != nil {
-//		err = match.VisitStoredFields(func(field string, value []byte) bool {
-//			if field == "_id" {
-//				fmt.Printf("match: %s\n", string(value))
-//			}
-//			return true
-//		})
-//		if err != nil {
-//			log.Fatalf("error loading stored fields: %v", err)
-//		}
-//		match, err = documentMatchIterator.Next()
-//	}
-//	if err != nil {
-//		log.Fatalf("error iterator document matches: %v", err)
-//	}
-//
-//	// tar + gzip
-//	var buf bytes.Buffer
-//	compress("./snpseg", &buf)
-//
-//	// write the .tar.gzip
-//	fileToWrite, err := os.OpenFile("./compress.tar.gzip", os.O_CREATE|os.O_RDWR, os.FileMode(600))
-//	if err != nil {
-//		panic(err)
-//	}
-//	if _, err := io.Copy(fileToWrite, &buf); err != nil {
-//		panic(err)
-//	}
-//
-//	content, err := ioutil.ReadFile("obstore2")
-//	red := bytes.NewReader(content)
-//	// untar write
-//	if err := decompress(red, "./uncompressHere/"); err != nil {
-//		// probably delete uncompressHere?
-//	}
-//
-//	content, err = ioutil.ReadFile("compress.tar.gzip")
-//	fsObjectClient, err := local.NewFSObjectClient(local.FSConfig{Directory: "./obstore"})
-//	fsObjectClient.PutObject(context.Background(), "path.Join(folder, fileName)2", bytes.NewReader(content))
-//
-//	pwd, _ := os.Getwd()
-//	err = shipper_util.GetFileFromStorage(context.Background(), fsObjectClient, "path.Join(folder, fileName)2", pwd+"/obstore2")
+//type Server interface {
+//	Shutdown()
+//	Run() error
 //}
 //
-//func compress(src string, buf io.Writer) error {
-//	// tar > gzip > buf
-//	zr := gzip.NewWriter(buf)
-//	tw := tar.NewWriter(zr)
+//// Server embed weaveworks server with static file and templating capability
+//type server struct {
+//	*serverww.Server
+//	log               log.Logger
+//	tms               *targets.TargetManagers
+//	externalURL       *url.URL
+//	healthCheckTarget bool
+//}
 //
-//	// is file a folder?
-//	fi, err := os.Stat(src)
+//// Config extends weaveworks server config
+//type Config struct {
+//	serverww.Config   `yaml:",inline"`
+//	ExternalURL       string `yaml:"external_url"`
+//	HealthCheckTarget *bool  `yaml:"health_check_target"`
+//	Disable           bool   `yaml:"disable"`
+//}
+//
+//// RegisterFlags with prefix registers flags where every name is prefixed by
+//// prefix. If prefix is a non-empty string, prefix should end with a period.
+//func (cfg *Config) RegisterFlagsWithPrefix(prefix string, f *flag.FlagSet) {
+//	// NOTE: weaveworks server's config can't be registered with a prefix.
+//	cfg.Config.RegisterFlags(f)
+//
+//	f.BoolVar(&cfg.Disable, prefix+"server.disable", false, "Disable the http and grpc server.")
+//}
+//
+//// RegisterFlags adds the flags required to config this to the given FlagSet
+//func (cfg *Config) RegisterFlags(f *flag.FlagSet) {
+//	cfg.RegisterFlagsWithPrefix("", f)
+//}
+//
+//// New makes a new Server
+//func New(cfg Config, log log.Logger, tms *targets.TargetManagers) (Server, error) {
+//	if cfg.Disable {
+//		return newNoopServer(log), nil
+//	}
+//	wws, err := serverww.New(cfg.Config)
 //	if err != nil {
-//		return err
+//		return nil, err
 //	}
-//	mode := fi.Mode()
-//	if mode.IsRegular() {
-//		// get header
-//		header, err := tar.FileInfoHeader(fi, src)
-//		if err != nil {
-//			return err
-//		}
-//		// write header
-//		if err := tw.WriteHeader(header); err != nil {
-//			return err
-//		}
-//		// get content
-//		data, err := os.Open(src)
-//		if err != nil {
-//			return err
-//		}
-//		if _, err := io.Copy(tw, data); err != nil {
-//			return err
-//		}
-//	} else if mode.IsDir() { // folder
 //
-//		// walk through every file in the folder
-//		filepath.Walk(src, func(file string, fi os.FileInfo, err error) error {
-//			// generate tar header
-//			header, err := tar.FileInfoHeader(fi, file)
-//			if err != nil {
-//				return err
-//			}
+//	externalURL, err := computeExternalURL(cfg.ExternalURL, cfg.HTTPListenPort)
+//	if err != nil {
+//		return nil, errors.Wrapf(err, "parse external URL %q", cfg.ExternalURL)
+//	}
+//	cfg.PathPrefix = externalURL.Path
 //
-//			// must provide real name
-//			// (see https://golang.org/src/archive/tar/common.go?#L626)
-//			header.Name = filepath.ToSlash(file)
+//	healthCheckTargetFlag := true
+//	if cfg.HealthCheckTarget != nil {
+//		healthCheckTargetFlag = *cfg.HealthCheckTarget
+//	}
 //
-//			// write header
-//			if err := tw.WriteHeader(header); err != nil {
-//				return err
-//			}
-//			// if not a dir, write file content
-//			if !fi.IsDir() {
-//				data, err := os.Open(file)
-//				if err != nil {
-//					return err
+//	serv := &server{
+//		Server:            wws,
+//		log:               log,
+//		tms:               tms,
+//		externalURL:       externalURL,
+//		healthCheckTarget: healthCheckTargetFlag,
+//	}
+//
+//	serv.HTTP.Path("/").Handler(http.RedirectHandler(path.Join(serv.externalURL.Path, "/targets"), 303))
+//	serv.HTTP.Path("/").Handler(http.HandlerFunc(serv.))
+//	serv.HTTP.PathPrefix("/static/").Handler(http.FileServer(ui.Assets))
+//	serv.HTTP.Path("/service-discovery").Handler(http.HandlerFunc(serv.serviceDiscovery))
+//	serv.HTTP.Path("/targets").Handler(http.HandlerFunc(serv.targets))
+//	return serv, nil
+//
+//}
+//
+//// serviceDiscovery serves the service discovery page.
+//func (s *server) serviceDiscovery(rw http.ResponseWriter, req *http.Request) {
+//	var index []string
+//	allTarget := s.tms.AllTargets()
+//	for job := range allTarget {
+//		index = append(index, job)
+//	}
+//	sort.Strings(index)
+//	scrapeConfigData := struct {
+//		Index   []string
+//		Targets map[string][]target.Target
+//		Active  []int
+//		Dropped []int
+//		Total   []int
+//	}{
+//		Index:   index,
+//		Targets: make(map[string][]target.Target),
+//		Active:  make([]int, len(index)),
+//		Dropped: make([]int, len(index)),
+//		Total:   make([]int, len(index)),
+//	}
+//	for i, job := range scrapeConfigData.Index {
+//		scrapeConfigData.Targets[job] = make([]target.Target, 0, len(allTarget[job]))
+//		scrapeConfigData.Total[i] = len(allTarget[job])
+//		for _, t := range allTarget[job] {
+//			// Do not display more than 100 dropped targets per job to avoid
+//			// returning too much data to the clients.
+//			if target.IsDropped(t) {
+//				scrapeConfigData.Dropped[i]++
+//				if scrapeConfigData.Dropped[i] > 100 {
+//					continue
 //				}
-//				if _, err := io.Copy(tw, data); err != nil {
-//					return err
-//				}
+//			} else {
+//				scrapeConfigData.Active[i]++
 //			}
-//			return nil
-//		})
-//	} else {
-//		return fmt.Errorf("error: file type not supported")
+//			scrapeConfigData.Targets[job] = append(scrapeConfigData.Targets[job], t)
+//		}
 //	}
 //
-//	// produce tar
-//	if err := tw.Close(); err != nil {
-//		return err
+//	executeTemplate(req.Context(), rw, templateOptions{
+//		Data:         scrapeConfigData,
+//		BuildVersion: version.Info(),
+//		Name:         "service-discovery.html",
+//		PageTitle:    "Service Discovery",
+//		ExternalURL:  s.externalURL,
+//		TemplateFuncs: template.FuncMap{
+//			"fileTargetDetails": func(details interface{}) map[string]int64 {
+//				// you can't cast with a text template in go so this is a helper
+//				return details.(map[string]int64)
+//			},
+//			"dropReason": func(details interface{}) string {
+//				if reason, ok := details.(string); ok {
+//					return reason
+//				}
+//				return ""
+//			},
+//			"num": func(ts []target.Target) (readies int) {
+//				for _, t := range ts {
+//					if t.() {
+//						readies++
+//					}
+//				}
+//				return
+//			},
+//		},
+//	})
+//}
+//
+//// targets serves the targets page.
+//func (s *server) targets(rw http.ResponseWriter, req *http.Request) {
+//	executeTemplate(req.Context(), rw, templateOptions{
+//		Data: struct {
+//			TargetPools map[string][]target.Target
+//		}{
+//			TargetPools: s.tms.ActiveTargets(),
+//		},
+//		BuildVersion: version.Info(),
+//		Name:         "targets.html",
+//		PageTitle:    "Targets",
+//		ExternalURL:  s.externalURL,
+//		TemplateFuncs: template.FuncMap{
+//			"fileTargetDetails": func(details interface{}) map[string]int64 {
+//				// you can't cast with a text template in go so this is a helper
+//				return details.(map[string]int64)
+//			},
+//			"journalTargetDetails": func(details interface{}) map[string]string {
+//				// you can't cast with a text template in go so this is a helper
+//				return details.(map[string]string)
+//			},
+//			"num": func(ts []target.Target) (readies int) {
+//				for _, t := range ts {
+//					if t.() {
+//						readies++
+//					}
+//				}
+//				return
+//			},
+//		},
+//	})
+//}
+//
+////  serves the  endpoint
+//func (s *server) (rw http.ResponseWriter, _ *http.Request) {
+//	if s.healthCheckTarget && !s.tms.() {
+//		http.Error(rw, readinessProbeFailure, http.StatusInternalServerError)
+//		return
 //	}
-//	// produce gzip
-//	if err := zr.Close(); err != nil {
-//		return err
+//
+//	rw.WriteHeader(http.StatusOK)
+//	if _, err := rw.Write(readinessProbeSuccess); err != nil {
+//		level.Error(s.log).Log("msg", "error writing success message", "error", err)
 //	}
-//	//
+//}
+//
+//// computeExternalURL computes a sanitized external URL from a raw input. It infers unset
+//// URL parts from the OS and the given listen address.
+//func computeExternalURL(u string, port int) (*url.URL, error) {
+//	if u == "" {
+//		hostname, err := os.Hostname()
+//		if err != nil {
+//			return nil, err
+//		}
+//
+//		u = fmt.Sprintf("http://%s:%d/", hostname, port)
+//	}
+//
+//	eu, err := url.Parse(u)
+//	if err != nil {
+//		return nil, err
+//	}
+//
+//	ppref := strings.TrimRight(eu.Path, "/")
+//	if ppref != "" && !strings.HasPrefix(ppref, "/") {
+//		ppref = "/" + ppref
+//	}
+//	eu.Path = ppref
+//
+//	return eu, nil
+//}
+//
+//type noopServer struct {
+//	log  log.Logger
+//	sigs chan os.Signal
+//}
+//
+//func newNoopServer(log log.Logger) *noopServer {
+//	return &noopServer{
+//		log:  log,
+//		sigs: make(chan os.Signal, 1),
+//	}
+//}
+//
+//func (s *noopServer) Run() error {
+//	signal.Notify(s.sigs, syscall.SIGINT, syscall.SIGTERM)
+//	sig := <-s.sigs
+//	level.Info(s.log).Log("msg", "received shutdown signal", "sig", sig)
 //	return nil
 //}
-//
-//// check for path traversal and correct forward slashes
-//func validRelPath(p string) bool {
-//	if p == "" || strings.Contains(p, `\`) || strings.HasPrefix(p, "/") || strings.Contains(p, "../") {
-//		return false
-//	}
-//	return true
-//}
-//
-//func decompress(src io.Reader, dst string) error {
-//	// ungzip
-//	zr, err := gzip.NewReader(src)
-//	if err != nil {
-//		return err
-//	}
-//	// untar
-//	tr := tar.NewReader(zr)
-//
-//	// uncompress each element
-//	for {
-//		header, err := tr.Next()
-//		if err == io.EOF {
-//			break // End of archive
-//		}
-//		if err != nil {
-//			return err
-//		}
-//		target := header.Name
-//
-//		// validate name against path traversal
-//		if !validRelPath(header.Name) {
-//			return fmt.Errorf("tar contained invalid name error %q", target)
-//		}
-//
-//		// add dst + re-format slashes according to system
-//		target = filepath.Join(dst, header.Name)
-//		// if no join is needed, replace with ToSlash:
-//		// target = filepath.ToSlash(header.Name)
-//
-//		// check the type
-//		switch header.Typeflag {
-//
-//		// if its a dir and it doesn't exist create it (with 0755 permission)
-//		case tar.TypeDir:
-//			if _, err := os.Stat(target); err != nil {
-//				if err := os.MkdirAll(target, 0755); err != nil {
-//					return err
-//				}
-//			}
-//		// if it's a file create it (with same permission)
-//		case tar.TypeReg:
-//			fileToWrite, err := os.OpenFile(target, os.O_CREATE|os.O_RDWR, os.FileMode(header.Mode))
-//			if err != nil {
-//				return err
-//			}
-//			// copy over contents
-//			if _, err := io.Copy(fileToWrite, tr); err != nil {
-//				return err
-//			}
-//			// manually close here after each file operation; defering would cause each file close
-//			// to wait until all operations have completed.
-//			fileToWrite.Close()
-//		}
-//	}
-//
-//	//
-//	return nil
+//func (s *noopServer) Shutdown() {
+//	s.sigs <- syscall.SIGTERM
 //}

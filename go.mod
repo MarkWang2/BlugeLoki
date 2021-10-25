@@ -13,16 +13,20 @@ require (
 	github.com/json-iterator/go v1.1.10 // indirect
 	github.com/klauspost/compress v1.9.5
 	github.com/kr/text v0.2.0 // indirect
+	github.com/miekg/dns v1.1.31 // indirect
 	github.com/pierrec/lz4 v2.5.3-0.20200429092203-e876bbd321b3+incompatible
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/prometheus/client_golang v1.7.1
 	github.com/prometheus/common v0.14.0
+	github.com/prometheus/procfs v0.1.3 // indirect
 	github.com/prometheus/prometheus v1.8.2-0.20200923143134-7e2db3d092f3
-	github.com/stretchr/testify v1.6.1
+	github.com/stretchr/testify v1.7.0
 	github.com/thanos-io/thanos v0.13.1-0.20200923175059-57035bf8f843 // indirect
 	github.com/weaveworks/common v0.0.0-20200914083218-61ffdd448099
 	go.etcd.io/bbolt v1.3.5-0.20200615073812-232d8fc87f50
+	go.uber.org/zap v1.19.1 // indirect
 	golang.org/x/text v0.3.6 // indirect
+	google.golang.org/grpc v1.30.0 // indirect
 	gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 )

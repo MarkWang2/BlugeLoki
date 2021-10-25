@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/MarkWang2/BlugeLoki/storage/stores/util"
 	"github.com/blugelabs/bluge"
 	segment "github.com/blugelabs/bluge_segment_api"
 	"log"
@@ -56,8 +57,15 @@ func (b *BlugeWriteBatch) AddJson(tableName string, data []byte) {
 	json.Unmarshal(data, &writes.Puts)
 }
 
+func (b *BlugeWriteBatch) AddEvent(tableName string, data util.MapStr) {
+	writes := b.getOrCreateTableWrites(tableName)
+	for k, v := range data {
+		writes.Puts[k] = v
+	}
+}
+
 type TableWrites struct {
-	Puts map[string]interface{} // puts map[string][]byte
+	Puts util.MapStr // puts map[string][]byte
 	//deletes map[string]struct{}
 }
 

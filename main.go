@@ -1,17 +1,42 @@
 package main
 
 import (
-	"context"
+	"github.com/MarkWang2/BlugeLoki/storage/stores/api"
+	//"context"
 	"github.com/cortexproject/cortex/pkg/chunk"
-	"github.com/cortexproject/cortex/pkg/chunk/local"
+
 	//"github.com/MarkWang2/BlugeLoki/pkg/storage/stores/shipper"
 
-	"github.com/MarkWang2/BlugeLoki/storage/stores/shipper"
 	//"github.com/MarkWang2/BlugeLoki/pkg/storage/stores/shipper"
 	"github.com/prometheus/common/model"
 	"time"
 )
 
+//type API struct {
+//	server    *server.Server
+//}
+//// Register
+//func (a *API) foo() {
+//	a.server.HTTP.Path("/").Handler(http.HandlerFunc(a.ready))
+//}
+////Run()
+//
+//// ready serves the ready endpoint
+//func (a *API) ready(rw http.ResponseWriter, req *http.Request) {
+//
+//	decoder := json.NewDecoder(req.Body)
+//	var t interface{}
+//	decoder.Decode(&t)
+//
+//	//if s.healthCheckTarget && !s.tms.Ready() {
+//	//	http.Error(rw, readinessProbeFailure, http.StatusInternalServerError)
+//	//	return
+//	//}
+//
+//
+//
+//	rw.WriteHeader(http.StatusOK)
+//}
 const (
 	baseTableName     = "cortex_base"
 	tablePrefix       = "cortex_"
@@ -33,7 +58,17 @@ const (
 )
 
 func main() {
-	fsObjectClient, _ := local.NewFSObjectClient(local.FSConfig{Directory: "./obstore"})
+	s := api.New()
+	s.Run()
+	//// cfg.HTTPListenAddress, cfg.HTTPListenPort
+	//cfg := server.Config{HTTPListenPort: 8080}
+	//wws, _ := server.New(cfg)
+	//
+	//s := &API{server: wws}
+	//s.foo()
+	//s.server.Run()
+
+	//fsObjectClient, _ := local.NewFSObjectClient(local.FSConfig{Directory: "./obstore"})
 	//
 	//fmt.Print(err)
 	//tb, _ := uploads.NewTable("/Users/mwang5/loki/snpseg", "uploader", fsObjectClient)
@@ -86,106 +121,106 @@ func main() {
 	//	return true
 	//})
 	//
-	config := shipper.Config{
-		ActiveIndexDirectory: "snpsegindex",
-		SharedStoreType:      "filesystem",
-		CacheLocation:        "dcache",
-		CacheTTL:             30 * time.Second,
-		ResyncInterval:       20 * time.Second,
-		IngesterName:         "wang",
-		Mode:                 shipper.ModeReadWrite,
-	}
-
-	cfg := chunk.DefaultSchemaConfig("", "v10", 0)
-	ts, _ := time.Parse(time.RFC3339, "1970-09-16T00:00:00Z")
-	tbName := cfg.Configs[0].IndexTables.TableFor(model.TimeFromUnix(ts.Unix()))
-	s, _ := shipper.NewShipper(config, fsObjectClient, nil)
-	// new struct
-	wr := s.NewWriteBatch()
-	// create new table 没有对应表明创建
-	// wr.Add(tbName, "test", []byte("test"), []byte("test"))
-	data := []byte(`
-	{
-		"id": 123,
-		"fname": "John",
-		"height": 1.75,
-		"male": true,
-		"languages": null,
-		"subjects": [ "Math", "Science" ],
-		"profile": {
-			"uname": "johndoe91",
-			"f_count": 1975
-		}
-	}`)
-
-	wr.AddJson(tbName, data)
-
-	s.BatchWrite(context.Background(), wr)
-	//match := map[string]string{
-	//	"test": "test",
+	//config := shipper.Config{
+	//	ActiveIndexDirectory: "snpsegindex",
+	//	SharedStoreType:      "filesystem",
+	//	CacheLocation:        "dcache",
+	//	CacheTTL:             30 * time.Second,
+	//	ResyncInterval:       20 * time.Second,
+	//	IngesterName:         "wang",
+	//	Mode:                 shipper.ModeReadWrite,
 	//}
-	//qs := bluge_db.IndexQuery{
-	//	TableName: "mark",
-	//	Query:     bluge.NewMatchQuery("test").SetField("test"),
+	//
+	//cfg := chunk.DefaultSchemaConfig("", "v10", 0)
+	//ts, _ := time.Parse(time.RFC3339, "1970-09-16T00:00:00Z")
+	//tbName := cfg.Configs[0].IndexTables.TableFor(model.TimeFromUnix(ts.Unix()))
+	//s, _ := shipper.NewShipper(config, fsObjectClient, nil)
+	//// new struct
+	//wr := s.NewWriteBatch()
+	//// create new table 没有对应表明创建
+	//// wr.Add(tbName, "test", []byte("test"), []byte("test"))
+	//data := []byte(`
+	//{
+	//	"id": 123,
+	//	"fname": "John",
+	//	"height": 1.75,
+	//	"male": true,
+	//	"languages": null,
+	//	"subjects": [ "Math", "Science" ],
+	//	"profile": {
+	//		"uname": "johndoe91",
+	//		"f_count": 1975
+	//	}
+	//}`)
+	//
+	//wr.AddJson(tbName, data)
+	//
+	//s.BatchWrite(context.Background(), wr)
+	////match := map[string]string{
+	////	"test": "test",
+	////}
+	////qs := bluge_db.IndexQuery{
+	////	TableName: "mark",
+	////	Query:     bluge.NewMatchQuery("test").SetField("test"),
+	////}
+	////s.QueryPages(context.Background(), []bluge_db.IndexQuery{qs}, func(field string, value []byte) bool {
+	////	if field == "_id" {
+	////		fmt.Printf("match: %s\n", string(value))
+	////	}
+	////	fmt.Printf("field: %s\n", string(field))
+	////	fmt.Printf("value: %s\n", string(value))
+	////	return true
+	////})
+	//
+	//// 控制表的生命周期如： 能读写 只读，对应实现es的生命周期
+	//tbmConfig := chunk.TableManagerConfig{
+	//	CreationGracePeriod: gracePeriod,
+	//	PollInterval:        15 * time.Second,
+	//	IndexTables: chunk.ProvisionConfig{
+	//		ActiveTableProvisionConfig: chunk.ActiveTableProvisionConfig{
+	//			ProvisionedWriteThroughput: write,
+	//			ProvisionedReadThroughput:  read,
+	//			//WriteScale:                 activeScalingConfig,
+	//		},
+	//		InactiveTableProvisionConfig: chunk.InactiveTableProvisionConfig{
+	//			InactiveWriteThroughput: inactiveWrite,
+	//			InactiveReadThroughput:  inactiveRead,
+	//			//InactiveWriteScale:      inactiveScalingConfig,
+	//			InactiveWriteScaleLastN: autoScaleLastN,
+	//		},
+	//	},
+	//	ChunkTables: chunk.ProvisionConfig{
+	//		ActiveTableProvisionConfig: chunk.ActiveTableProvisionConfig{
+	//			ProvisionedWriteThroughput: write,
+	//			ProvisionedReadThroughput:  read,
+	//		},
+	//		InactiveTableProvisionConfig: chunk.InactiveTableProvisionConfig{
+	//			InactiveWriteThroughput: inactiveWrite,
+	//			InactiveReadThroughput:  inactiveRead,
+	//		},
+	//	},
 	//}
-	//s.QueryPages(context.Background(), []bluge_db.IndexQuery{qs}, func(field string, value []byte) bool {
-	//	if field == "_id" {
-	//		fmt.Printf("match: %s\n", string(value))
-	//	}
-	//	fmt.Printf("field: %s\n", string(field))
-	//	fmt.Printf("value: %s\n", string(value))
-	//	return true
-	//})
-
-	// 控制表的生命周期如： 能读写 只读，对应实现es的生命周期
-	tbmConfig := chunk.TableManagerConfig{
-		CreationGracePeriod: gracePeriod,
-		PollInterval:        15 * time.Second,
-		IndexTables: chunk.ProvisionConfig{
-			ActiveTableProvisionConfig: chunk.ActiveTableProvisionConfig{
-				ProvisionedWriteThroughput: write,
-				ProvisionedReadThroughput:  read,
-				//WriteScale:                 activeScalingConfig,
-			},
-			InactiveTableProvisionConfig: chunk.InactiveTableProvisionConfig{
-				InactiveWriteThroughput: inactiveWrite,
-				InactiveReadThroughput:  inactiveRead,
-				//InactiveWriteScale:      inactiveScalingConfig,
-				InactiveWriteScaleLastN: autoScaleLastN,
-			},
-		},
-		ChunkTables: chunk.ProvisionConfig{
-			ActiveTableProvisionConfig: chunk.ActiveTableProvisionConfig{
-				ProvisionedWriteThroughput: write,
-				ProvisionedReadThroughput:  read,
-			},
-			InactiveTableProvisionConfig: chunk.InactiveTableProvisionConfig{
-				InactiveWriteThroughput: inactiveWrite,
-				InactiveReadThroughput:  inactiveRead,
-			},
-		},
-	}
-	// MustParseDayTime("2021-09-16")
-
-	//a, _ := cfg.IndexTables..ChunkTableFor(model.TimeFromUnix(ts.Unix()))
-	tableClient := shipper.NewBoltDBShipperTableClient(fsObjectClient)
-	tableManager, _ := chunk.NewTableManager(tbmConfig, cfg, maxChunkAge, tableClient, nil, nil, nil)
-
-	tableManager.SyncTables(context.Background())
-	//tableManager.QueryPages(context.Background(), []bluge_db.IndexQuery{qs}, func(field string, value []byte) bool {
-	//	if field == "_id" {
-	//		fmt.Printf("match: %s\n", string(value))
-	//	}
-	//	return true
-	//})
-	//wr := bluge_db.NewWriteBatch()
-	//wr.Add("mark", "test", []byte("test"), []byte("test"))
-	// tableManager.BatchWrite(context.Background(), wr)
-	//fmt.Print(s)
-	select {
-	case <-time.Tick(2000000000 * time.Second):
-		//t.Fatal("failed to initialize table in time")
-	}
+	//// MustParseDayTime("2021-09-16")
+	//
+	////a, _ := cfg.IndexTables..ChunkTableFor(model.TimeFromUnix(ts.Unix()))
+	//tableClient := shipper.NewBoltDBShipperTableClient(fsObjectClient)
+	//tableManager, _ := chunk.NewTableManager(tbmConfig, cfg, maxChunkAge, tableClient, nil, nil, nil)
+	//
+	//tableManager.SyncTables(context.Background())
+	////tableManager.QueryPages(context.Background(), []bluge_db.IndexQuery{qs}, func(field string, value []byte) bool {
+	////	if field == "_id" {
+	////		fmt.Printf("match: %s\n", string(value))
+	////	}
+	////	return true
+	////})
+	////wr := bluge_db.NewWriteBatch()
+	////wr.Add("mark", "test", []byte("test"), []byte("test"))
+	//// tableManager.BatchWrite(context.Background(), wr)
+	////fmt.Print(s)
+	//select {
+	//case <-time.Tick(2000000000 * time.Second):
+	//	//t.Fatal("failed to initialize table in time")
+	//}
 	//fmt.Print(tableManager)
 }
 
