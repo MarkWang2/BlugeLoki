@@ -3,10 +3,15 @@ package api
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"github.com/MarkWang2/BlugeLoki/storage/stores/shipper"
 	"github.com/MarkWang2/BlugeLoki/storage/stores/util"
 	"github.com/cortexproject/cortex/pkg/chunk"
+	"github.com/cortexproject/cortex/pkg/chunk/aws"
+	"github.com/cortexproject/cortex/pkg/chunk/azure"
+	"github.com/cortexproject/cortex/pkg/chunk/gcp"
 	"github.com/cortexproject/cortex/pkg/chunk/local"
+	"github.com/cortexproject/cortex/pkg/chunk/openstack"
 	"github.com/prometheus/common/model"
 	"github.com/weaveworks/common/server"
 	"io/ioutil"
@@ -16,16 +21,73 @@ import (
 
 type API struct {
 	server *server.Server
+	config *Config
+}
+
+const (
+	StorageTypeAWS        = "aws"
+	StorageTypeAzure      = "azure"
+	StorageTypeInMemory   = "inmemory"
+	StorageTypeFileSystem = "filesystem"
+	StorageTypeGCS        = "gcs"
+	StorageTypeS3         = "s3"
+	StorageTypeSwift      = "swift"
+)
+
+// Config chooses which storage client to use.
+type Config struct {
+	ObjectStoreName    string
+	HTTPListenPort     int
+	Engine             string                  `yaml:"engine"`
+	AWSStorageConfig   aws.StorageConfig       `yaml:"aws"`
+	AzureStorageConfig azure.BlobStorageConfig `yaml:"azure"`
+	GCPStorageConfig   gcp.Config              `yaml:"bigtable"`
+	GCSConfig          gcp.GCSConfig           `yaml:"gcs"`
+	FSConfig           local.FSConfig          `yaml:"filesystem"`
+	Swift              openstack.SwiftConfig   `yaml:"swift"`
+}
+
+func (a *API) ObjectClient() (chunk.ObjectClient, error) {
+	cfg := a.config
+	switch cfg.ObjectStoreName {
+	case StorageTypeAWS, StorageTypeS3:
+		return aws.NewS3ObjectClient(cfg.AWSStorageConfig.S3Config)
+	case StorageTypeGCS:
+		return gcp.NewGCSObjectClient(context.Background(), cfg.GCSConfig)
+	case StorageTypeAzure:
+		return azure.NewBlobStorage(&cfg.AzureStorageConfig)
+	case StorageTypeSwift:
+		return openstack.NewSwiftObjectClient(cfg.Swift)
+	case StorageTypeInMemory:
+		return chunk.NewMockStorage(), nil
+	case StorageTypeFileSystem:
+		return local.NewFSObjectClient(cfg.FSConfig)
+	default:
+		return nil, fmt.Errorf("Unrecognized storage client %v, choose one of: %v, %v, %v, %v, %v", cfg.ObjectStoreName, StorageTypeAWS, StorageTypeS3, StorageTypeGCS, StorageTypeAzure, StorageTypeFileSystem)
+	}
+}
+
+func (a *API) NewShipper() (*shipper.Shipper, error) {
+	objectClient, _ := a.ObjectClient()
+	config := shipper.Config{
+		ActiveIndexDirectory: "snpsegindex",
+		SharedStoreType:      a.config.ObjectStoreName,
+		CacheLocation:        "dcache",
+		CacheTTL:             30 * time.Second,
+		ResyncInterval:       20 * time.Second,
+		IngesterName:         "wang",
+		Mode:                 shipper.ModeReadWrite,
+	}
+	return shipper.NewShipper(config, objectClient, nil)
 }
 
 func New() *API {
-	// cfg.HTTPListenAddress, cfg.HTTPListenPort
+	config := &Config{HTTPListenPort: 8080, ObjectStoreName: StorageTypeFileSystem}
 	cfg := server.Config{HTTPListenPort: 8080}
 	wws, _ := server.New(cfg)
-	s := &API{server: wws}
+	s := &API{server: wws, config: config}
 	s.RegisterRoute()
-	//s.server.Run()
-	return &API{server: wws}
+	return s
 }
 
 // Register
@@ -37,8 +99,6 @@ func (a *API) Run() {
 	a.server.Run()
 }
 
-//Run()
-
 // ready serves the ready endpoint
 func (a *API) WriteLogs(rw http.ResponseWriter, req *http.Request) {
 	decoder := json.NewDecoder(req.Body)
@@ -49,19 +109,6 @@ func (a *API) WriteLogs(rw http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		panic(err)
 	}
-
-	fsObjectClient, _ := local.NewFSObjectClient(local.FSConfig{Directory: "./obstore"})
-	config := shipper.Config{
-		ActiveIndexDirectory: "snpsegindex",
-		SharedStoreType:      "filesystem",
-		CacheLocation:        "dcache",
-		CacheTTL:             30 * time.Second,
-		ResyncInterval:       20 * time.Second,
-		IngesterName:         "wang",
-		Mode:                 shipper.ModeReadWrite,
-	}
-
-	//body = []byte(`{"@timestamp":"0001-01-01T00:00:00.000+00:00","@metadata":{"beat":"test","type":"_doc","version":"1.2.3"},"msg":"message"}`)
 
 	body = []byte(`{
 		"Timestamp": "2017-06-29T13:58:28Z",
@@ -143,35 +190,18 @@ func (a *API) WriteLogs(rw http.ResponseWriter, req *http.Request) {
 	"Private": null,
 	"TimeSeries": false
 	}`)
-	//data := []byte(`
-	//{
-	//	"id": 123,
-	//	"fname": "John",
-	//	"height": 1.75,
-	//	"male": true,
-	//	"languages": null,
-	//	"subjects": [ "Math", "Science" ],
-	//	"profile": {
-	//		"uname": "johndoe91",
-	//		"f_count": 1975
-	//	}
-	//}`)
-	//json.Unmarshal()
 
 	var event util.Event
 
 	json.Unmarshal(body, &event)
 
 	cfg := chunk.DefaultSchemaConfig("", "v10", 0)
-	ts, _ := time.Parse(time.RFC3339, "1970-09-16T00:00:00Z")
-	tbName := cfg.Configs[0].IndexTables.TableFor(model.TimeFromUnix(ts.Unix()))
-	s, _ := shipper.NewShipper(config, fsObjectClient, nil)
+	s, _ := a.NewShipper()
 	wr := s.NewWriteBatch()
 	event.Fields["@timestamp"] = event.Timestamp
 
-	tbName = cfg.Configs[0].IndexTables.TableFor(model.TimeFromUnix(event.Timestamp.Unix()))
+	tbName := cfg.Configs[0].IndexTables.TableFor(model.TimeFromUnix(event.Timestamp.Unix()))
 	wr.AddEvent(tbName, event.Fields)
-	//wr.AddJson(tbName, body)
 	s.BatchWrite(context.Background(), wr)
 
 	//if s.healthCheckTarget && !s.tms.Ready() {
@@ -180,86 +210,3 @@ func (a *API) WriteLogs(rw http.ResponseWriter, req *http.Request) {
 	//}
 	rw.WriteHeader(http.StatusOK)
 }
-
-func (a *API) foo() {
-	fsObjectClient, _ := local.NewFSObjectClient(local.FSConfig{Directory: "./obstore"})
-	config := shipper.Config{
-		ActiveIndexDirectory: "snpsegindex",
-		SharedStoreType:      "filesystem",
-		CacheLocation:        "dcache",
-		CacheTTL:             30 * time.Second,
-		ResyncInterval:       20 * time.Second,
-		IngesterName:         "wang",
-		Mode:                 shipper.ModeReadWrite,
-	}
-
-	cfg := chunk.DefaultSchemaConfig("", "v10", 0)
-	ts, _ := time.Parse(time.RFC3339, "1970-09-16T00:00:00Z")
-	tbName := cfg.Configs[0].IndexTables.TableFor(model.TimeFromUnix(ts.Unix()))
-	s, _ := shipper.NewShipper(config, fsObjectClient, nil)
-	// new struct
-	wr := s.NewWriteBatch()
-	// create new table 没有对应表明创建
-	// wr.Add(tbName, "test", []byte("test"), []byte("test"))
-	data := []byte(`
-	{
-		"id": 123,
-		"fname": "John",
-		"height": 1.75,
-		"male": true,
-		"languages": null,
-		"subjects": [ "Math", "Science" ],
-		"profile": {
-			"uname": "johndoe91",
-			"f_count": 1975
-		}
-	}`)
-
-	wr.AddJson(tbName, data)
-
-	s.BatchWrite(context.Background(), wr)
-}
-
-//config := shipper.Config{
-//	ActiveIndexDirectory: "snpsegindex",
-//	SharedStoreType:      "filesystem",
-//	CacheLocation:        "dcache",
-//	CacheTTL:             30 * time.Second,
-//	ResyncInterval:       20 * time.Second,
-//	IngesterName:         "wang",
-//	Mode:                 shipper.ModeReadWrite,
-//}
-//
-//cfg := chunk.DefaultSchemaConfig("", "v10", 0)
-//ts, _ := time.Parse(time.RFC3339, "1970-09-16T00:00:00Z")
-//tbName := cfg.Configs[0].IndexTables.TableFor(model.TimeFromUnix(ts.Unix()))
-//s, _ := shipper.NewShipper(config, fsObjectClient, nil)
-//// new struct
-//wr := s.NewWriteBatch()
-//// create new table 没有对应表明创建
-//// wr.Add(tbName, "test", []byte("test"), []byte("test"))
-//data := []byte(`
-//{
-//	"id": 123,
-//	"fname": "John",
-//	"height": 1.75,
-//	"male": true,
-//	"languages": null,
-//	"subjects": [ "Math", "Science" ],
-//	"profile": {
-//		"uname": "johndoe91",
-//		"f_count": 1975
-//	}
-//}`)
-//
-//wr.AddJson(tbName, data)
-//
-//s.BatchWrite(context.Background(), wr)
-
-//// cfg.HTTPListenAddress, cfg.HTTPListenPort
-//cfg := server.Config{HTTPListenPort: 8080}
-//wws, _ := server.New(cfg)
-//
-//s := &API{server: wws}
-//s.foo()
-//s.server.Run()
