@@ -36,15 +36,16 @@ const (
 
 // Config chooses which storage client to use.
 type Config struct {
-	ObjectStoreName    string
-	HTTPListenPort     int
-	Engine             string                  `yaml:"engine"`
-	AWSStorageConfig   aws.StorageConfig       `yaml:"aws"`
-	AzureStorageConfig azure.BlobStorageConfig `yaml:"azure"`
-	GCPStorageConfig   gcp.Config              `yaml:"bigtable"`
-	GCSConfig          gcp.GCSConfig           `yaml:"gcs"`
-	FSConfig           local.FSConfig          `yaml:"filesystem"`
-	Swift              openstack.SwiftConfig   `yaml:"swift"`
+	ObjectStoreName      string
+	ActiveIndexDirectory string
+	HTTPListenPort       int
+	Engine               string                  `yaml:"engine"`
+	AWSStorageConfig     aws.StorageConfig       `yaml:"aws"`
+	AzureStorageConfig   azure.BlobStorageConfig `yaml:"azure"`
+	GCPStorageConfig     gcp.Config              `yaml:"bigtable"`
+	GCSConfig            gcp.GCSConfig           `yaml:"gcs"`
+	FSConfig             local.FSConfig          `yaml:"filesystem"`
+	Swift                openstack.SwiftConfig   `yaml:"swift"`
 }
 
 func (a *API) ObjectClient() (chunk.ObjectClient, error) {
@@ -70,7 +71,7 @@ func (a *API) ObjectClient() (chunk.ObjectClient, error) {
 func (a *API) NewShipper() (*shipper.Shipper, error) {
 	objectClient, _ := a.ObjectClient()
 	config := shipper.Config{
-		ActiveIndexDirectory: "snpsegindex",
+		ActiveIndexDirectory: a.config.ActiveIndexDirectory, //"snpsegindex",
 		SharedStoreType:      a.config.ObjectStoreName,
 		CacheLocation:        "dcache",
 		CacheTTL:             30 * time.Second,
@@ -82,7 +83,8 @@ func (a *API) NewShipper() (*shipper.Shipper, error) {
 }
 
 func New() *API {
-	config := &Config{HTTPListenPort: 8080, ObjectStoreName: StorageTypeFileSystem}
+	config := &Config{HTTPListenPort: 8080, ObjectStoreName: StorageTypeFileSystem, ActiveIndexDirectory: "snpsegindex"}
+	config.FSConfig = local.FSConfig{Directory: "./obstore"}
 	cfg := server.Config{HTTPListenPort: 8080}
 	wws, _ := server.New(cfg)
 	s := &API{server: wws, config: config}
